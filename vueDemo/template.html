@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="blog-posts-events-demo">
+        <div :style="{ fontSize: postFontSize + 'em' }">
+            <blog-post v-for="post in posts"
+             v-bind:key="post.id"
+              v-bind:post="post"
+              v-on:enlarge-text="postFontSize+= $event">
+              <!-- 如果是一个方法，就是传入的第一个值 -->
+            </blog-post>
+        </div>
+
+
+        <div>
+            <com-input v-model="searchText"></com-input>
+            {{searchText}}
+        </div>
+
+        <alert-box>fadsf</alert-box>
+    </div>
+
+    <div id='test1'>
+            <component-a v-bind="post" ref="componentAs"></component-a>
+    </div>
+
+    <script>
+    
+        
+
+    var componentA = {
+        props:['id','title'],
+        template:`
+        <div>
+            
+            <slot></slot>
+            {{id}} {{title}} 
+            </div>
+        `,
+        created:function(){
+            console.log(this.$root.post.title);
+            
+        }
+    }
+
+
+    new Vue({
+        el:'#test1',
+        data:{
+            post:{
+                id:1,
+                title:'hahaafsadf'
+            }
+        },
+        components:{
+            'component-a':componentA
+        }
+    })
+    
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <script>
+        Vue.component('alert-box',{
+        
+            template:`
+            <div  :class={demo:true,alert:true}>
+                <strong>error!</strong>
+                <slot></slot>
+                </div>
+            `
+        })
+        
+        Vue.component('com-input',{
+            props:['value'],
+            template:`
+            <div>
+            <input 
+                v-bind:value='value'
+                v-on:input="$emit('input',$event.target.value)"
+                >
+            <div>{{value}}</div>
+            </div>
+            `
+        })
+        
+        Vue.component('blog-post', {
+            props: ['post'],
+            data:function(){
+                return{
+                    fontSize:1
+                }
+            },
+            template: `
+    <div class="blog-post">
+      <h3>{{ post.title }}</h3>
+       <span :style="{fontSize:fontSize+'em'}">{{post.title}}</span>
+       <button class="one" v-on:click="fontSize+=0.1">
+        enlargeSelf
+        </button>
+       <button class="two" v-on:click="$emit('enlarge-text',0.1)">
+        Enlarge text
+      </button>
+      <div v-html="post.content"></div>
+    </div>
+  `
+        })
+
+         new Vue({
+            el: '#blog-posts-events-demo',
+            data: {
+                posts: [{title:"one"},
+            {title:"two"}],
+                postFontSize: 1,
+                searchText:''
+            }
+        })
+    </script>
+</body>
+
+</html>

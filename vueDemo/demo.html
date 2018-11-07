@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app-1">
+        <span>{{a}}</span>
+        <button v-on:click="a='fa'">change</button>
+    </div>
+
+    <div id="app-2">
+        <span v-if=true>{{a}}</span>
+        <span v-html='a'></span><br />
+        {{now}}
+        <br />
+
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <input placeholder="Enter your username">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address">
+        </template>
+        <br />
+        <button @click='haha'>fa</button><br />
+        <ul>
+            <template v-for="item in items">
+                <li>{{item.msg}}</li>
+                <li class="divider" role="opresentation">s</li>
+            </template>
+        </ul>
+
+
+        <button v-on:click.stop="warn('Form cannot be submitted yet.', $event)">
+            Submit
+        </button>
+    </div>
+<br/>
+    <div id="demo">
+        <form v-on:submit.prevent="addUser">
+            <input v-model.lazy.number='username'/>{{username}}
+            <button>add</button>
+        </form>
+            <ul>
+                <li 
+                is='todoList' 
+                v-for='user in users'
+                v-bind:username=user.username
+                v-bind:id=user.id>
+                </li>
+            </ul>
+
+            <input
+  type="checkbox"
+  v-model="toggle"
+  true-value="yes"
+  false-value="no"
+>{{toggle}}
+
+<select v-model="selected">
+        <!-- 内联对象字面量 -->
+      <option v-bind:value="{ number: 123 }">123</option>
+    </select>{{selected.number}}
+    </div>
+
+    <script>
+        Vue.component('todoList',{
+            template:'<li>{{username}}</li>',
+            props:['username']
+        })
+
+    var vm4 = new Vue({
+        el:"#demo",
+        data:{
+            username:"",
+            users:[
+                {id:1,username:'haha'},
+                {id:2,username:'gaga'}
+            ],
+            addUserCount:3,
+            toggle:'yes',
+            selected:''
+        },
+        methods:{
+            addUser:function(){
+                this.users.push({
+                    id:this.addUserCount++,
+                    username:this.username
+                })
+                this.username=''
+            }
+        }
+    })
+    </script>
+    <script src="js/app1.js"></script>
+</body>
+
+</html>
