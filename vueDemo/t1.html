@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="one">
+        <p-1 value="fa">
+            <!-- <p-2></p-2> -->
+        </p-1>
+        <anchored-heading :level="1">hello world</anchored-heading>
+    </div>
+
+
+
+
+    <script type="text/x-template" id="anchored-heading-template">
+        <h1 v-if="level === 1">
+          <slot></slot>
+        </h1>
+        <h2 v-else-if="level === 2">
+          <slot></slot>
+        </h2>
+        <h3 v-else-if="level === 3">
+          <slot></slot>
+        </h3>
+        <h4 v-else-if="level === 4">
+          <slot></slot>
+        </h4>
+        <h5 v-else-if="level === 5">
+          <slot></slot>
+        </h5>
+        <h6 v-else-if="level === 6">
+          <slot></slot>
+        </h6>
+      </script>
+
+
+    <script>
+
+        Vue.component('anchored-heading', {
+            // template: '#anchored-heading-template',
+            render: function (createElement) {
+                return createElement(
+                    'h' + this.level,
+                    this.$slots.default
+                )
+            },
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            }
+        })
+
+
+        var p2 = {
+            inject: ['getP'],//调用父组件的属性方法
+            template: `
+            <p>faf</p>
+
+            `,
+            created: function () {
+                // console.log(this.$parent.getP());
+                console.log(this.getP());
+
+            }
+        }
+
+
+        var p1 = {
+            props: ['value'],
+            template: `
+            <div>
+                    <h1>{{value}}</h1>
+                    <p-2></p-2>
+                </div>
+               
+            `,
+            methods: {
+                getP: function () {
+                    return 'hadjji'
+                }
+            },
+            provide: function () {//提供给后代组件使用，不然就得
+                //this.$parent.$parent**.XX无限套用
+                return {
+                    getP: this.getP
+                }
+            },
+            components: {
+                'p-2': p2
+            }
+        }
+
+
+
+        new Vue({
+            el: '#one',
+            components: {
+                'p-1': p1,
+            }
+        })
+
+    </script>
+</body>
+
+</html>

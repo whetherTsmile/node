@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src='node_modules/vue/dist/vue.js'></script>
+</head>
+
+<body>
+
+    <div id="demo">
+        <!-- {{message}} -->
+    </div>
+
+    <div id="demo1">
+        <input v-focus v-model='message'>
+        {{message|capitalize}}
+    </div>
+    <div id="hook-arguments-example" v-demo:foo.a.b="message"></div>
+    <script>
+        
+        var mixin = {
+            data: function () {
+                return {
+                    message: 'haha'
+                }
+            },
+            created: function () {
+                console.log(this.message);
+
+            }
+        }
+
+        var vm = new Vue({
+            mixins: [mixin],
+            data: function () {
+                return {
+                    message: 'gaga'
+                }
+            },
+            created: function () {
+                console.log(this.$data);
+            },
+            render: function (createElement) {
+                var s = createElement(
+                    'h1', this.message
+                )
+
+                return s
+            }
+        })
+
+        vm.$mount('#demo')
+
+        Vue.mixin({
+            created: function () {
+                var myoption = this.$options.myoption
+                if (myoption) {
+                    console.log(myoption);
+
+                }
+            }
+        })
+        //自定义v-xx属性
+        var vm1 = new Vue({
+            myoption: 'hello'
+        })
+
+        Vue.directive('focus', {
+            inserted: function (el) {
+                el.focus()
+            },
+            
+        })
+
+        // Vue.filter('capitalize',function(value){
+        //             if(!value) return ''
+        //             value = value.toString()
+        //             return value.charAt(0).toUpperCase()
+        //             + value.slice(1)
+        //         }
+        //     )
+        new Vue({
+            el: '#demo1',
+            data:{message:''},
+            filters:{
+                capitalize:function(value){
+                    if(!value) return ''
+                    value = value.toString()
+                    return value.charAt(0).toUpperCase()
+                    + value.slice(1)
+                }
+            }
+        })
+
+        Vue.directive('demo', {
+            bind: function (el, binding, vnode) {
+                var s = JSON.stringify
+                el.innerHTML =
+                    'name: ' + s(binding.name) + '<br>' +
+                    'value: ' + s(binding.value) + '<br>' +
+                    'expression: ' + s(binding.expression) + '<br>' +
+                    'argument: ' + s(binding.arg) + '<br>' +
+                    'modifiers: ' + s(binding.modifiers) + '<br>' +
+                    'vnode keys: ' + Object.keys(vnode).join(', ')
+            }
+        })
+
+        new Vue({
+            el: '#hook-arguments-example',
+            data: {
+                message: 'hello!'
+            }
+        })
+    </script>
+</body>
+
+</html>
